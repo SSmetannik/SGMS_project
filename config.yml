@@ -1,0 +1,828 @@
+# ================================================================
+#                     PlayerProgress 2.0 — конфиг
+# ================================================================
+# Познания (ключи): attack, defense, agility, magic, building,
+#                   gathering, mining, farming
+# Цвета: &a, &c, &l ... и HEX: &#ff8800
+# После изменений: /pp reload
+# ================================================================
+
+settings:
+  max-level: 32
+  # Миры, где PlayerProgress выключен: нет ограничений, нет бонусов
+  # атрибутов, очки не начисляются, усилители и прокачка не работают.
+  # Меню открыть можно (только просмотр).
+  disabled-worlds:
+    - example_world
+  # Игроки в творческом режиме и наблюдатели игнорируют ограничения
+  # и не получают очки.
+  bypass-creative: true
+  # Ограничивать "физическое" взаимодействие с блоками
+  # (наступить на нажимную плиту, растоптать грядку).
+  restrict-physical-interaction: true
+  # Удалять запрещённую броню/элитры со слотов брони (проверка раз в секунду).
+  armor-check: true
+  # Показывать полученные очки в action bar.
+  actionbar-on-points: true
+  # Перестать начислять очки, если познание уже максимального уровня.
+  stop-points-at-max-level: true
+  # Как часто (в минутах) пересчитывать топы.
+  top-update-minutes: 5
+  # Как часто (в секундах) сохранять данные в базу.
+  autosave-seconds: 60
+
+# ----------------------------------------------------------------
+#  Названия и иконки познаний (иконки — в меню)
+# ----------------------------------------------------------------
+skills:
+  attack:    { name: "&cАтака",          icon: IRON_SWORD }
+  defense:   { name: "&9Защита",         icon: SHIELD }
+  agility:   { name: "&aВыносливость",   icon: LEATHER_BOOTS }
+  magic:     { name: "&dМагия",          icon: ENCHANTED_BOOK }
+  building:  { name: "&eСтроительство",  icon: BRICKS }
+  gathering: { name: "&2Собирательство", icon: OAK_LOG }
+  mining:    { name: "&6Горное дело",    icon: IRON_PICKAXE }
+  farming:   { name: "&aЗемледелие",     icon: WHEAT }
+
+# ----------------------------------------------------------------
+#  Прокачка: очки + уровни опыта
+# ----------------------------------------------------------------
+# Чтобы получить уровень N познания, нужно потратить:
+#   очки  = points-per-level × N   (или число из custom, если указано)
+#   опыт  = (N - 1) × xp-cost-per-level уровней опыта
+#           (2 ур. = 1 опыт, 3 ур. = 2 опыта, ... 32 ур. = 31 опыт)
+# В custom можно вручную задать очки для отдельных уровней, например:
+#   custom:
+#     2: 5
+#     32: 2000
+leveling:
+  xp-cost-per-level: 1
+  skills:
+    attack:    { points-per-level: 15, custom: {} }
+    defense:   { points-per-level: 15, custom: {} }
+    agility:   { points-per-level: 10, custom: {} }
+    magic:     { points-per-level: 8,  custom: {} }
+    building:  { points-per-level: 40, custom: {} }
+    gathering: { points-per-level: 25, custom: {} }
+    mining:    { points-per-level: 40, custom: {} }
+    farming:   { points-per-level: 25, custom: {} }
+
+# ----------------------------------------------------------------
+#  Очки за действия (0 — отключить действие)
+# ----------------------------------------------------------------
+actions:
+  attack:
+    kill-hostile: 1        # убийство враждебного моба
+  defense:
+    shield-block: 1        # заблокированный щитом удар
+    armor-damage: 1        # за каждые armor-damage-step урона, полученного в броне
+  agility:
+    distance: 1            # за каждые distance-step пройденных блоков
+  magic:
+    enchant: 3             # зачарование на столе
+    brew: 1                # за каждое сваренное зелье
+  building:
+    place: 1               # установка блока
+  gathering:
+    log: 1                 # природное бревно / стебель
+    fish: 1                # пойманная рыба (удочкой)
+    flower: 1              # природный цветок
+    berry: 1               # сбор ягод (сладкие и светящиеся)
+    mushroom: 1            # природный гриб
+  mining:
+    stone: 1               # природный камень
+    ore: 3                 # природная руда
+  farming:
+    harvest: 1             # сбор спелого урожая
+    breed: 1               # разведение животных
+
+action-settings:
+  armor-damage-step: 5
+  distance-step: 100
+  # Какие передвижения считаются для Выносливости (статистика Minecraft).
+  # Только то, что требует постоянного нажатия клавиш. Элитры и вагонетки не считаются.
+  distance-statistics:
+    - WALK_ONE_CM
+    - SPRINT_ONE_CM
+    - CROUCH_ONE_CM
+    - SWIM_ONE_CM
+    - WALK_ON_WATER_ONE_CM
+    - WALK_UNDER_WATER_ONE_CM
+    - CLIMB_ONE_CM
+    - HORSE_ONE_CM
+    - BOAT_ONE_CM
+    - HAPPY_GHAST_ONE_CM
+  distance-check-seconds: 5
+  # Мобы, появившиеся по этим причинам, не дают очков Атаки.
+  excluded-spawn-reasons:
+    - SPAWNER
+  # Списки блоков. Можно писать точное имя или шаблон со звёздочкой.
+  # Блоки, поставленные игроком, очков не дают (кроме спелых посевов).
+  stone-blocks:
+    - STONE
+    - DEEPSLATE
+    - COBBLESTONE
+    - COBBLED_DEEPSLATE
+    - GRANITE
+    - DIORITE
+    - ANDESITE
+    - TUFF
+    - CALCITE
+    - DRIPSTONE_BLOCK
+    - NETHERRACK
+    - BASALT
+    - BLACKSTONE
+    - END_STONE
+    - SANDSTONE
+    - RED_SANDSTONE
+  ore-blocks:
+    - "*_ORE"
+    - ANCIENT_DEBRIS
+  log-blocks:
+    - "*_LOG"
+    - "*_WOOD"
+    - CRIMSON_STEM
+    - WARPED_STEM
+    - CRIMSON_HYPHAE
+    - WARPED_HYPHAE
+    - BAMBOO_BLOCK
+  flower-blocks:
+    - DANDELION
+    - POPPY
+    - BLUE_ORCHID
+    - ALLIUM
+    - AZURE_BLUET
+    - "*_TULIP"
+    - OXEYE_DAISY
+    - CORNFLOWER
+    - LILY_OF_THE_VALLEY
+    - SUNFLOWER
+    - LILAC
+    - ROSE_BUSH
+    - PEONY
+    - TORCHFLOWER
+    - PITCHER_PLANT
+    - PINK_PETALS
+    - WILDFLOWERS
+    - OPEN_EYEBLOSSOM
+    - CLOSED_EYEBLOSSOM
+    - SPORE_BLOSSOM
+    - CACTUS_FLOWER
+  mushroom-blocks:
+    - BROWN_MUSHROOM
+    - RED_MUSHROOM
+    - CRIMSON_FUNGUS
+    - WARPED_FUNGUS
+  # Посевы: очки только если растение полностью выросло.
+  crop-blocks:
+    - WHEAT
+    - CARROTS
+    - POTATOES
+    - BEETROOTS
+    - NETHER_WART
+    - COCOA
+    - TORCHFLOWER_CROP
+    - PITCHER_CROP
+  # Урожай без стадий роста: очки, если блок не поставлен игроком.
+  natural-harvest-blocks:
+    - MELON
+    - PUMPKIN
+    - SUGAR_CANE
+    - CACTUS
+    - BAMBOO
+
+# ----------------------------------------------------------------
+#  Бонусы атрибутов
+# ----------------------------------------------------------------
+# Значение — итоговый бонус для этого уровня (не суммируется по уровням).
+# Если уровень не указан, берётся ближайший меньший указанный.
+# Один атрибут в нескольких познаниях — бонусы складываются.
+# Имена атрибутов как в /attribute: attack_damage, armor, movement_speed,
+# max_health, block_interaction_range, luck, mining_efficiency, ...
+attributes:
+  attack:
+    1: { attack_damage: 0.0 }
+    2: { attack_damage: 0.1 }
+    3: { attack_damage: 0.2 }
+    4: { attack_damage: 0.3 }
+    5: { attack_damage: 0.4 }
+    6: { attack_damage: 0.5 }
+    7: { attack_damage: 0.6 }
+    8: { attack_damage: 0.7 }
+    9: { attack_damage: 0.8 }
+    10: { attack_damage: 0.9 }
+    11: { attack_damage: 1.0 }
+    12: { attack_damage: 1.1 }
+    13: { attack_damage: 1.2 }
+    14: { attack_damage: 1.3 }
+    15: { attack_damage: 1.4 }
+    16: { attack_damage: 1.5 }
+    17: { attack_damage: 1.6 }
+    18: { attack_damage: 1.7 }
+    19: { attack_damage: 1.8 }
+    20: { attack_damage: 1.9 }
+    21: { attack_damage: 2.0 }
+    22: { attack_damage: 2.1 }
+    23: { attack_damage: 2.2 }
+    24: { attack_damage: 2.3 }
+    25: { attack_damage: 2.4 }
+    26: { attack_damage: 2.5 }
+    27: { attack_damage: 2.6 }
+    28: { attack_damage: 2.7 }
+    29: { attack_damage: 2.8 }
+    30: { attack_damage: 2.9 }
+    31: { attack_damage: 3.0 }
+    32: { attack_damage: 3.1 }
+  defense:
+    1: { armor: 0.0 }
+    2: { armor: 0.25 }
+    3: { armor: 0.5 }
+    4: { armor: 0.75 }
+    5: { armor: 1.0 }
+    6: { armor: 1.25 }
+    7: { armor: 1.5 }
+    8: { armor: 1.75 }
+    9: { armor: 2.0 }
+    10: { armor: 2.25 }
+    11: { armor: 2.5 }
+    12: { armor: 2.75 }
+    13: { armor: 3.0 }
+    14: { armor: 3.25 }
+    15: { armor: 3.5 }
+    16: { armor: 3.75 }
+    17: { armor: 4.0 }
+    18: { armor: 4.25 }
+    19: { armor: 4.5 }
+    20: { armor: 4.75 }
+    21: { armor: 5.0 }
+    22: { armor: 5.25 }
+    23: { armor: 5.5 }
+    24: { armor: 5.75 }
+    25: { armor: 6.0 }
+    26: { armor: 6.25 }
+    27: { armor: 6.5 }
+    28: { armor: 6.75 }
+    29: { armor: 7.0 }
+    30: { armor: 7.25 }
+    31: { armor: 7.5 }
+    32: { armor: 7.75 }
+  agility:
+    1: { movement_speed: 0.0 }
+    2: { movement_speed: 0.0025 }
+    3: { movement_speed: 0.005 }
+    4: { movement_speed: 0.0075 }
+    5: { movement_speed: 0.01 }
+    6: { movement_speed: 0.0125 }
+    7: { movement_speed: 0.015 }
+    8: { movement_speed: 0.0175 }
+    9: { movement_speed: 0.02 }
+    10: { movement_speed: 0.0225 }
+    11: { movement_speed: 0.025 }
+    12: { movement_speed: 0.0275 }
+    13: { movement_speed: 0.03 }
+    14: { movement_speed: 0.0325 }
+    15: { movement_speed: 0.035 }
+    16: { movement_speed: 0.0375 }
+    17: { movement_speed: 0.04 }
+    18: { movement_speed: 0.0425 }
+    19: { movement_speed: 0.045 }
+    20: { movement_speed: 0.0475 }
+    21: { movement_speed: 0.05 }
+    22: { movement_speed: 0.0525 }
+    23: { movement_speed: 0.055 }
+    24: { movement_speed: 0.0575 }
+    25: { movement_speed: 0.06 }
+    26: { movement_speed: 0.0625 }
+    27: { movement_speed: 0.065 }
+    28: { movement_speed: 0.0675 }
+    29: { movement_speed: 0.07 }
+    30: { movement_speed: 0.0725 }
+    31: { movement_speed: 0.075 }
+    32: { movement_speed: 0.0775 }
+  magic:
+    1: { max_health: 0.0 }
+    2: { max_health: 0.5 }
+    3: { max_health: 1.0 }
+    4: { max_health: 1.5 }
+    5: { max_health: 2.0 }
+    6: { max_health: 2.5 }
+    7: { max_health: 3.0 }
+    8: { max_health: 3.5 }
+    9: { max_health: 4.0 }
+    10: { max_health: 4.5 }
+    11: { max_health: 5.0 }
+    12: { max_health: 5.5 }
+    13: { max_health: 6.0 }
+    14: { max_health: 6.5 }
+    15: { max_health: 7.0 }
+    16: { max_health: 7.5 }
+    17: { max_health: 8.0 }
+    18: { max_health: 8.5 }
+    19: { max_health: 9.0 }
+    20: { max_health: 9.5 }
+    21: { max_health: 10.0 }
+    22: { max_health: 10.5 }
+    23: { max_health: 11.0 }
+    24: { max_health: 11.5 }
+    25: { max_health: 12.0 }
+    26: { max_health: 12.5 }
+    27: { max_health: 13.0 }
+    28: { max_health: 13.5 }
+    29: { max_health: 14.0 }
+    30: { max_health: 14.5 }
+    31: { max_health: 15.0 }
+    32: { max_health: 15.5 }
+  building:
+    1: { block_interaction_range: 0.0 }
+    2: { block_interaction_range: 0.1 }
+    3: { block_interaction_range: 0.2 }
+    4: { block_interaction_range: 0.3 }
+    5: { block_interaction_range: 0.4 }
+    6: { block_interaction_range: 0.5 }
+    7: { block_interaction_range: 0.6 }
+    8: { block_interaction_range: 0.7 }
+    9: { block_interaction_range: 0.8 }
+    10: { block_interaction_range: 0.9 }
+    11: { block_interaction_range: 1.0 }
+    12: { block_interaction_range: 1.1 }
+    13: { block_interaction_range: 1.2 }
+    14: { block_interaction_range: 1.3 }
+    15: { block_interaction_range: 1.4 }
+    16: { block_interaction_range: 1.5 }
+    17: { block_interaction_range: 1.6 }
+    18: { block_interaction_range: 1.7 }
+    19: { block_interaction_range: 1.8 }
+    20: { block_interaction_range: 1.9 }
+    21: { block_interaction_range: 2.0 }
+    22: { block_interaction_range: 2.1 }
+    23: { block_interaction_range: 2.2 }
+    24: { block_interaction_range: 2.3 }
+    25: { block_interaction_range: 2.4 }
+    26: { block_interaction_range: 2.5 }
+    27: { block_interaction_range: 2.6 }
+    28: { block_interaction_range: 2.7 }
+    29: { block_interaction_range: 2.8 }
+    30: { block_interaction_range: 2.9 }
+    31: { block_interaction_range: 3.0 }
+    32: { block_interaction_range: 3.1 }
+  gathering:
+    1: { luck: 0.0 }
+    2: { luck: 0.1 }
+    3: { luck: 0.2 }
+    4: { luck: 0.3 }
+    5: { luck: 0.4 }
+    6: { luck: 0.5 }
+    7: { luck: 0.6 }
+    8: { luck: 0.7 }
+    9: { luck: 0.8 }
+    10: { luck: 0.9 }
+    11: { luck: 1.0 }
+    12: { luck: 1.1 }
+    13: { luck: 1.2 }
+    14: { luck: 1.3 }
+    15: { luck: 1.4 }
+    16: { luck: 1.5 }
+    17: { luck: 1.6 }
+    18: { luck: 1.7 }
+    19: { luck: 1.8 }
+    20: { luck: 1.9 }
+    21: { luck: 2.0 }
+    22: { luck: 2.1 }
+    23: { luck: 2.2 }
+    24: { luck: 2.3 }
+    25: { luck: 2.4 }
+    26: { luck: 2.5 }
+    27: { luck: 2.6 }
+    28: { luck: 2.7 }
+    29: { luck: 2.8 }
+    30: { luck: 2.9 }
+    31: { luck: 3.0 }
+    32: { luck: 3.1 }
+  mining:
+    1: { mining_efficiency: 0.0 }
+    2: { mining_efficiency: 0.5 }
+    3: { mining_efficiency: 1.0 }
+    4: { mining_efficiency: 1.5 }
+    5: { mining_efficiency: 2.0 }
+    6: { mining_efficiency: 2.5 }
+    7: { mining_efficiency: 3.0 }
+    8: { mining_efficiency: 3.5 }
+    9: { mining_efficiency: 4.0 }
+    10: { mining_efficiency: 4.5 }
+    11: { mining_efficiency: 5.0 }
+    12: { mining_efficiency: 5.5 }
+    13: { mining_efficiency: 6.0 }
+    14: { mining_efficiency: 6.5 }
+    15: { mining_efficiency: 7.0 }
+    16: { mining_efficiency: 7.5 }
+    17: { mining_efficiency: 8.0 }
+    18: { mining_efficiency: 8.5 }
+    19: { mining_efficiency: 9.0 }
+    20: { mining_efficiency: 9.5 }
+    21: { mining_efficiency: 10.0 }
+    22: { mining_efficiency: 10.5 }
+    23: { mining_efficiency: 11.0 }
+    24: { mining_efficiency: 11.5 }
+    25: { mining_efficiency: 12.0 }
+    26: { mining_efficiency: 12.5 }
+    27: { mining_efficiency: 13.0 }
+    28: { mining_efficiency: 13.5 }
+    29: { mining_efficiency: 14.0 }
+    30: { mining_efficiency: 14.5 }
+    31: { mining_efficiency: 15.0 }
+    32: { mining_efficiency: 15.5 }
+  farming:
+    1: { luck: 0.0 }
+    2: { luck: 0.1 }
+    3: { luck: 0.2 }
+    4: { luck: 0.3 }
+    5: { luck: 0.4 }
+    6: { luck: 0.5 }
+    7: { luck: 0.6 }
+    8: { luck: 0.7 }
+    9: { luck: 0.8 }
+    10: { luck: 0.9 }
+    11: { luck: 1.0 }
+    12: { luck: 1.1 }
+    13: { luck: 1.2 }
+    14: { luck: 1.3 }
+    15: { luck: 1.4 }
+    16: { luck: 1.5 }
+    17: { luck: 1.6 }
+    18: { luck: 1.7 }
+    19: { luck: 1.8 }
+    20: { luck: 1.9 }
+    21: { luck: 2.0 }
+    22: { luck: 2.1 }
+    23: { luck: 2.2 }
+    24: { luck: 2.3 }
+    25: { luck: 2.4 }
+    26: { luck: 2.5 }
+    27: { luck: 2.6 }
+    28: { luck: 2.7 }
+    29: { luck: 2.8 }
+    30: { luck: 2.9 }
+    31: { luck: 3.0 }
+    32: { luck: 3.1 }
+# ----------------------------------------------------------------
+#  Ограничения ванильных предметов
+# ----------------------------------------------------------------
+# Предмет нельзя использовать (бить, ломать им блоки, кликать ПКМ,
+# стрелять, есть/пить, надевать), если уровень познания ниже указанного.
+# Если предмет есть в нескольких познаниях — нужны ВСЕ уровни.
+# Можно писать точное имя или шаблон со звёздочкой: "*_BUNDLE".
+# Несуществующие в вашей версии предметы просто игнорируются.
+restrictions:
+  items:
+    mining:
+      WOODEN_PICKAXE: 1
+      STONE_PICKAXE: 4
+      GOLDEN_PICKAXE: 6
+      COPPER_PICKAXE: 6
+      IRON_PICKAXE: 8
+      DIAMOND_PICKAXE: 16
+      NETHERITE_PICKAXE: 32
+    attack:
+      WOODEN_SWORD: 1
+      STONE_SWORD: 4
+      COPPER_SWORD: 6
+      GOLDEN_SWORD: 6
+      IRON_SWORD: 8
+      DIAMOND_SWORD: 16
+      NETHERITE_SWORD: 32
+      WOODEN_SPEAR: 1
+      STONE_SPEAR: 4
+      COPPER_SPEAR: 6
+      GOLDEN_SPEAR: 6
+      IRON_SPEAR: 8
+      DIAMOND_SPEAR: 16
+      NETHERITE_SPEAR: 32
+      BOW: 6
+      CROSSBOW: 8
+      TRIDENT: 16
+      MACE: 32
+    defense:
+      LEATHER_HELMET: 1
+      LEATHER_CHESTPLATE: 1
+      LEATHER_LEGGINGS: 1
+      LEATHER_BOOTS: 1
+      CHAINMAIL_HELMET: 4
+      CHAINMAIL_CHESTPLATE: 4
+      CHAINMAIL_LEGGINGS: 4
+      CHAINMAIL_BOOTS: 4
+      GOLDEN_HELMET: 6
+      GOLDEN_CHESTPLATE: 6
+      GOLDEN_LEGGINGS: 6
+      GOLDEN_BOOTS: 6
+      COPPER_HELMET: 6
+      COPPER_CHESTPLATE: 6
+      COPPER_LEGGINGS: 6
+      COPPER_BOOTS: 6
+      IRON_HELMET: 8
+      IRON_CHESTPLATE: 8
+      IRON_LEGGINGS: 8
+      IRON_BOOTS: 8
+      TURTLE_HELMET: 8
+      SHIELD: 4
+      DIAMOND_HELMET: 16
+      DIAMOND_CHESTPLATE: 16
+      DIAMOND_LEGGINGS: 16
+      DIAMOND_BOOTS: 16
+      NETHERITE_HELMET: 32
+      NETHERITE_CHESTPLATE: 32
+      NETHERITE_LEGGINGS: 32
+      NETHERITE_BOOTS: 32
+    agility:
+      SNOWBALL: 1
+      EGG: 1
+      BROWN_EGG: 1
+      BLUE_EGG: 1
+      WOODEN_SWORD: 1
+      STONE_SWORD: 4
+      COPPER_SWORD: 6
+      GOLDEN_SWORD: 6
+      IRON_SWORD: 8
+      DIAMOND_SWORD: 16
+      NETHERITE_SWORD: 32
+      WOODEN_SPEAR: 1
+      STONE_SPEAR: 4
+      COPPER_SPEAR: 6
+      GOLDEN_SPEAR: 6
+      IRON_SPEAR: 8
+      DIAMOND_SPEAR: 16
+      NETHERITE_SPEAR: 32
+      SHIELD: 4
+      BOW: 6
+      CROSSBOW: 8
+      CARROT_ON_A_STICK: 4
+      WARPED_FUNGUS_ON_A_STICK: 8
+      GOAT_HORN: 8
+      TRIDENT: 16
+      ELYTRA: 32
+    magic:
+      MILK_BUCKET: 1
+      POTION: 4
+      SPLASH_POTION: 6
+      LINGERING_POTION: 8
+      SUSPICIOUS_STEW: 4
+      GOLDEN_APPLE: 8
+      ENDER_PEARL: 8
+      WIND_CHARGE: 16
+      OMINOUS_BOTTLE: 16
+      ENDER_EYE: 16
+      ENCHANTED_GOLDEN_APPLE: 32
+    farming:
+      WOODEN_SHOVEL: 1
+      STONE_SHOVEL: 4
+      GOLDEN_SHOVEL: 6
+      COPPER_SHOVEL: 6
+      IRON_SHOVEL: 8
+      DIAMOND_SHOVEL: 16
+      NETHERITE_SHOVEL: 32
+      BONE_MEAL: 1
+      LEAD: 4
+      SHEARS: 4
+      FLINT_AND_STEEL: 4
+      BRUSH: 6
+      NAME_TAG: 8
+    gathering:
+      WOODEN_AXE: 1
+      STONE_AXE: 4
+      GOLDEN_AXE: 6
+      COPPER_AXE: 6
+      IRON_AXE: 8
+      DIAMOND_AXE: 16
+      NETHERITE_AXE: 32
+      BUCKET: 1
+      WATER_BUCKET: 1
+      MAP: 1
+      FILLED_MAP: 1
+      FISHING_ROD: 4
+      SHEARS: 4
+      BUNDLE: 4
+      "*_BUNDLE": 4
+      COD_BUCKET: 6
+      SALMON_BUCKET: 6
+      TROPICAL_FISH_BUCKET: 6
+      POWDER_SNOW_BUCKET: 6
+      LAVA_BUCKET: 8
+      PUFFERFISH_BUCKET: 8
+      TADPOLE_BUCKET: 8
+      AXOLOTL_BUCKET: 16
+      SULFUR_CUBE_BUCKET: 16
+
+  # ----------------------------------------------------------------
+  #  Ограничения ванильных блоков
+  # ----------------------------------------------------------------
+  # Блок нельзя ставить, ломать и с ним взаимодействовать.
+  # Сюда же относятся стойки для брони, рамки, картины и вагонетки.
+  blocks:
+    building:
+      CRAFTING_TABLE: 1
+      "*_BED": 1
+      LADDER: 1
+      CHEST: 1
+      BARREL: 1
+      FURNACE: 1
+      TORCH: 1
+      CAMPFIRE: 4
+      SMOKER: 4
+      STONECUTTER: 4
+      LOOM: 4
+      CARTOGRAPHY_TABLE: 4
+      FLETCHING_TABLE: 4
+      GRINDSTONE: 4
+      COMPOSTER: 4
+      CAULDRON: 4
+      SCAFFOLDING: 4
+      ARMOR_STAND: 4
+      ITEM_FRAME: 4
+      PAINTING: 4
+      LECTERN: 4
+      BOOKSHELF: 4
+      "*_SHELF": 4
+      "*_DOOR": 4
+      "*_TRAPDOOR": 4
+      "*_BUTTON": 4
+      "*_PRESSURE_PLATE": 4
+      LEVER: 4
+      "*_STAIRS": 4
+      "*_SLAB": 4
+      "*_FENCE": 4
+      "*_FENCE_GATE": 4
+      "*_WALL": 4
+      BLAST_FURNACE: 6
+      SMITHING_TABLE: 6
+      CHISELED_BOOKSHELF: 6
+      DECORATED_POT: 6
+      BEEHIVE: 6
+      GLOW_ITEM_FRAME: 6
+      "*COPPER_CHEST": 6
+      REDSTONE_WIRE: 6
+      REDSTONE_TORCH: 6
+      REDSTONE_WALL_TORCH: 6
+      TARGET: 6
+      DAYLIGHT_DETECTOR: 6
+      MINECART: 6
+      "*_MINECART": 8
+      NOTE_BLOCK: 8
+      JUKEBOX: 8
+      BELL: 8
+      REDSTONE_BLOCK: 8
+      REPEATER: 8
+      COMPARATOR: 8
+      HOPPER: 8
+      DROPPER: 8
+      DISPENSER: 8
+      PISTON: 8
+      STICKY_PISTON: 12
+      CRAFTER: 12
+      SOUL_CAMPFIRE: 8
+      BREWING_STAND: 8
+      ENCHANTING_TABLE: 8
+      ANVIL: 12
+      CHIPPED_ANVIL: 12
+      DAMAGED_ANVIL: 12
+      LODESTONE: 16
+      ENDER_CHEST: 16
+      "*SHULKER_BOX": 16
+      RESPAWN_ANCHOR: 24
+      CONDUIT: 24
+      BEACON: 32
+    magic:
+      SOUL_CAMPFIRE: 4
+      BREWING_STAND: 4
+      BOOKSHELF: 4
+      ENCHANTING_TABLE: 8
+      ANVIL: 8
+      CHIPPED_ANVIL: 8
+      DAMAGED_ANVIL: 8
+      ENDER_CHEST: 16
+      RESPAWN_ANCHOR: 24
+      SPAWNER: 32
+      END_PORTAL_FRAME: 32
+      DRAGON_EGG: 32
+    farming:
+      FARMLAND: 1
+      FLOWER_POT: 1
+      COMPOSTER: 4
+      BARREL: 1
+      BEE_NEST: 6
+      BEEHIVE: 6
+
+# ----------------------------------------------------------------
+#  ItemsAdder
+# ----------------------------------------------------------------
+# Для предметов ItemsAdder базовый ванильный материал игнорируется,
+# действуют только правила ниже. Формат ID: namespace:id
+itemsadder:
+  # Кастомные предметы (оружие, инструменты, броня, еда, ...)
+  items: {}
+  #  "myitems:fire_sword":
+  #    attack: 16
+  #    agility: 8
+  # Кастомные блоки и мебель
+  blocks: {}
+  #  "myitems:magic_table":
+  #    magic: 10
+  #    building: 8
+
+# ----------------------------------------------------------------
+#  Усилители (только предметы ItemsAdder)
+# ----------------------------------------------------------------
+# item — ID предмета ItemsAdder. Без ItemsAdder усилители не работают.
+# increase-chance — шанс +1 уровень (%), decrease-chance — шанс -1 уровень (%),
+# остаток — ничего не произойдёт.
+# Право на использование: playerprogress.booster.<ключ> (по умолчанию есть у всех).
+boosters:
+  attack:    { item: "playerprogress:booster_attack",    increase-chance: 80, decrease-chance: 5 }
+  defense:   { item: "playerprogress:booster_defense",   increase-chance: 80, decrease-chance: 5 }
+  agility:   { item: "playerprogress:booster_agility",   increase-chance: 80, decrease-chance: 5 }
+  magic:     { item: "playerprogress:booster_magic",     increase-chance: 80, decrease-chance: 5 }
+  building:  { item: "playerprogress:booster_building",  increase-chance: 80, decrease-chance: 5 }
+  gathering: { item: "playerprogress:booster_gathering", increase-chance: 80, decrease-chance: 5 }
+  mining:    { item: "playerprogress:booster_mining",    increase-chance: 80, decrease-chance: 5 }
+  farming:   { item: "playerprogress:booster_farming",   increase-chance: 80, decrease-chance: 5 }
+  random:    { item: "playerprogress:booster_random",    increase-chance: 70, decrease-chance: 10 }
+
+# ----------------------------------------------------------------
+#  Меню
+# ----------------------------------------------------------------
+menu:
+  title: "&8Познания"
+  tops-title: "&8Топ игроков"
+  admin-title: "&4Админ: игроки"
+  admin-edit-title: "&4Админ: %player%"
+  filler: GRAY_STAINED_GLASS_PANE
+  skill-lore:
+    - "&7Уровень: &f%level%&7/&f%max%"
+    - "&7Очки: &f%points%&7/&f%required%"
+    - "&7Опыт для повышения: &f%xp% ур."
+    - ""
+    - "%status%"
+  status-ready: "&a▶ Нажмите, чтобы повысить"
+  status-not-enough: "&cНе хватает очков или опыта"
+  status-max: "&6Максимальный уровень"
+  status-disabled: "&cПрокачка отключена в этом мире"
+  info-name: "&e%player%"
+  info-lore:
+    - "&7Сумма уровней: &f%total%"
+    - "&7Место в общем топе: &f#%rank%"
+  tops-button: "&6Топ игроков"
+  back-button: "&cНазад"
+  admin-button: "&4Админ-меню"
+  top-line: "&e#%place% &f%player% &7— &a%value%"
+  top-empty: "&7Пока никого нет"
+  total-name: "&6Сумма всех познаний"
+  admin-skill-lore:
+    - "&7Уровень: &f%level%&7, очки: &f%points%"
+    - ""
+    - "&aЛКМ &7— +1 уровень"
+    - "&cПКМ &7— -1 уровень"
+    - "&aShift+ЛКМ &7— +10 очков"
+    - "&cShift+ПКМ &7— -10 очков"
+  admin-booster-lore:
+    - "&7Нажмите, чтобы выдать игроку"
+
+# ----------------------------------------------------------------
+#  Сообщения
+# ----------------------------------------------------------------
+messages:
+  prefix: "&8[&6Познания&8] &r"
+  no-permission: "&cУ вас недостаточно прав."
+  player-only: "&cЭту команду может выполнить только игрок."
+  player-not-found: "&cИгрок &e%player% &cне найден."
+  invalid-skill: "&cНеизвестное познание. Доступны: &e%list%"
+  invalid-number: "&cЗначение должно быть целым неотрицательным числом."
+  invalid-action: "&cДействие должно быть set, add или take."
+  invalid-booster: "&cНеизвестный усилитель. Доступны: &e%list%"
+  usage: |-
+    &6/pp menu &7— меню прокачки
+    &6/pp top [познание|total] &7— топ игроков
+    &6/pp progress <игрок> <познание> <set|add|take> <значение>
+    &6/pp points <игрок> <познание> <set|add|take> <значение>
+    &6/pp give <игрок> <усилитель> [количество]
+    &6/pp admin &7— админ-меню
+    &6/pp reload &7— перезагрузка конфига
+  level-changed: "&aПознание &e%skill% &aигрока &e%player%&a: &e%old% &a→ &e%new%"
+  points-changed: "&aОчки познания &e%skill% &aигрока &e%player%&a: &e%old% &a→ &e%new%"
+  reloaded: "&aКонфиг перезагружен."
+  insufficient-level: "&cНедостаточный уровень познания &e%skill%&c: нужен &e%required%&c, у вас &e%current%&c."
+  armor-removed: "&cВы не можете носить &e%item%&c: нужен уровень &e%required% &cпознания &e%skill% &c(у вас &e%current%&c)."
+  disabled-world: "&cВ этом мире прокачка познаний отключена."
+  points-actionbar: "&a+%amount% &7%skill% &8(&f%points%&8/&f%required%&8)"
+  points-ready: "&aВы накопили достаточно очков для повышения &e%skill%&a! Откройте &e/pp menu&a."
+  upgraded: "&aПознание &e%skill% &aповышено до &e%level% &aуровня!"
+  upgrade-max: "&cПознание &e%skill% &cуже максимального уровня."
+  upgrade-no-points: "&cНе хватает очков: нужно &e%required%&c, у вас &e%points%&c."
+  upgrade-no-xp: "&cНе хватает опыта: нужно &e%xp% &cуровней."
+  booster-up: "&aУсилитель сработал! &e%skill% &aтеперь &e%level% &aуровня."
+  booster-down: "&cНеудача! Уровень &e%skill% &cснизился до &e%level%&c."
+  booster-nothing: "&eУсилитель использован, но ничего не произошло."
+  booster-maxed: "&cПознание &e%skill% &cуже максимального уровня."
+  booster-all-maxed: "&cВсе познания уже максимального уровня."
+  booster-no-permission: "&cВы не можете использовать этот усилитель."
+  booster-given: "&aВыдано &e%amount% &aшт. усилителя &e%booster% &aигроку &e%player%&a."
+  booster-not-loaded: "&cПредмет &e%item% &cне найден в ItemsAdder."
+  itemsadder-missing: "&cItemsAdder не установлен — усилители недоступны."
+  top-header: "&6Топ по познанию %skill%&6:"

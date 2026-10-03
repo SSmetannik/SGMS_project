@@ -1,0 +1,29 @@
+name: PlayerProgress
+version: '${project.version}'
+main: com.steelrework.playerprogress.PlayerProgressPlugin
+api-version: '26.1'
+author: SteelRework
+description: Прокачка познаний игроков
+softdepend: [PlaceholderAPI, ItemsAdder]
+libraries:
+  - org.xerial:sqlite-jdbc:3.46.1.0
+
+commands:
+  playerprogress:
+    description: Главная команда PlayerProgress
+    aliases: [pp]
+    usage: /pp <menu|top|progress|points|give|admin|reload>
+
+permissions:
+  playerprogress.menu:
+    description: Открывать меню прокачки
+    default: true
+  playerprogress.top:
+    description: Смотреть топы игроков
+    default: true
+  playerprogress.admin:
+    description: Админ-команды и админ-меню
+    default: op
+  playerprogress.bypass:
+    description: Полностью игнорировать ограничения по уровню
+    default: false
