@@ -36,10 +36,11 @@ public final class DataManager {
         this.storage = storage;
     }
 
-    public void loadAll(Collection<PlayerData> loaded) {
+    public void loadAll(Collection<PlayerData> loaded, boolean markDirty) {
         for (PlayerData d : loaded) {
             players.put(d.uuid(), d);
             byName.put(d.name().toLowerCase(Locale.ROOT), d.uuid());
+            if (markDirty) dirty.add(d.uuid());
         }
     }
 
@@ -78,26 +79,27 @@ public final class DataManager {
         dirty.add(data.uuid());
     }
 
+    /** Сохраняет, если что-то изменилось (файл пишется целиком, в отдельном потоке). */
     public void saveDirtyAsync() {
-        storage.saveAsync(takeDirtySnapshots());
+        if (dirty.isEmpty()) return;
+        dirty.clear();
+        storage.saveAsync(snapshotAll());
     }
 
+    /** Сохранение при выходе игрока. */
     public void saveAsync(PlayerData data) {
-        dirty.remove(data.uuid());
-        storage.saveAsync(List.of(Storage.Snapshot.of(data)));
+        dirty.add(data.uuid());
+        saveDirtyAsync();
     }
 
     public void close() {
-        storage.close(takeDirtySnapshots());
+        dirty.clear();
+        storage.close(snapshotAll());
     }
 
-    private List<Storage.Snapshot> takeDirtySnapshots() {
-        List<Storage.Snapshot> list = new ArrayList<>(dirty.size());
-        for (UUID uuid : dirty) {
-            PlayerData d = players.get(uuid);
-            if (d != null) list.add(Storage.Snapshot.of(d));
-        }
-        dirty.clear();
+    private List<Storage.Snapshot> snapshotAll() {
+        List<Storage.Snapshot> list = new ArrayList<>(players.size());
+        for (PlayerData d : players.values()) list.add(Storage.Snapshot.of(d));
         return list;
     }
 

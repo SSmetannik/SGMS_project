@@ -1,6 +1,7 @@
 package com.steelrework.playerprogress;
 
 import com.steelrework.playerprogress.data.DataManager;
+import com.steelrework.playerprogress.data.PlayerData;
 import com.steelrework.playerprogress.data.Storage;
 import com.steelrework.playerprogress.hook.ItemsAdderHook;
 import com.steelrework.playerprogress.listener.ActionListener;
@@ -20,6 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -48,20 +50,18 @@ public final class PlayerProgressPlugin extends JavaPlugin {
         messages = new Messages();
         messages.load(getConfig());
 
-        Storage storage;
-        try {
-            if (!getDataFolder().exists() && !getDataFolder().mkdirs()) {
-                getLogger().warning("Не удалось создать папку плагина");
-            }
-            storage = new Storage(new File(getDataFolder(), "data.db"), getLogger());
-            int migrated = storage.migrateLegacy(Math.max(1, getConfig().getInt("settings.max-level", 32)));
-            if (migrated > 0) getLogger().info("Перенесены уровни " + migrated + " игроков из старой версии плагина.");
-            data = new DataManager(storage);
-            data.loadAll(storage.loadAll(1, Math.max(1, getConfig().getInt("settings.max-level", 32))));
-        } catch (Exception e) {
-            getLogger().log(Level.SEVERE, "Не удалось открыть базу данных SQLite. Плагин выключен.", e);
-            getServer().getPluginManager().disablePlugin(this);
-            return;
+        if (!getDataFolder().exists() && !getDataFolder().mkdirs()) {
+            getLogger().warning("Не удалось создать папку плагина");
+        }
+        int maxLevel = Math.max(1, getConfig().getInt("settings.max-level", 32));
+        Storage storage = new Storage(getDataFolder(), getLogger());
+        data = new DataManager(storage);
+        List<PlayerData> migrated = storage.migrateLegacy(getDataFolder(), maxLevel);
+        if (!migrated.isEmpty()) {
+            data.loadAll(migrated, true);
+            getLogger().info("Перенесены уровни " + migrated.size() + " игроков из старой базы data.db.");
+        } else {
+            data.loadAll(storage.loadAll(1, maxLevel), false);
         }
 
         itemsAdder = new ItemsAdderHook(getLogger());
